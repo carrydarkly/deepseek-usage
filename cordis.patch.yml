@@ -1,0 +1,17 @@
+# deepseek-usage bundle patch: mounts the host half of the plugin. The same
+# loader entry's package.json declares `dsh.client`, so the browser half
+# (`lib/client.js`) is picked up automatically by client-modules and served
+# under /plugins/deepseek-usage/client.js — no separate client row needed.
+#
+# Config keys:
+#   apiKeyEnv          credential reference / env var holding the DeepSeek key
+#   baseURL            DeepSeek API base URL (the /user/balance path is appended)
+#   apiKey             optional literal key; overrides the credential store
+#   refreshIntervalMs  how often the host re-queries DeepSeek (default 60000)
+- insert:
+    - id: deepseek-usage
+      name: 'deepseek-usage'
+      config:
+        apiKeyEnv: DEEPSEEK_API_KEY
+        baseURL: 'https://api.deepseek.com'
+        refreshIntervalMs: 60000
