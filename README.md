@@ -1,4 +1,5 @@
 # deepseek-usage
+> 🤖 **AI 辅助生成声明**：本插件代码由 AI 辅助完成，所有功能实现均经过人工审查、测试和调整后发布。
 
 在 DSH Web GUI 的**会话头部**显示 **DeepSeek API 账户余额/剩余额度**的插件（当前仅支持 DeepSeek API）。
 
