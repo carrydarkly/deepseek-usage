@@ -36,5 +36,13 @@
     "cordis.patch.yml",
     "README.md"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carrydarkly/deepseek-usage.git"
+  },
+  "homepage": "https://github.com/carrydarkly/deepseek-usage#readme",
+  "bugs": {
+    "url": "https://github.com/carrydarkly/deepseek-usage/issues"
+  },
   "license": "MIT"
 }
