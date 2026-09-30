@@ -21,29 +21,31 @@ deepseek-usage/
 ├── package.json        # dsh.bundle.patch + dsh.client 声明（同一个 loader 条目挂载宿主与浏览器两半）
 ├── cordis.patch.yml    # bundle 补丁层：插入 deepseek-usage 宿主行
 ├── lib/index.js        # 宿主半：拉取余额、缓存、提供 /deepseek-usage/* 路由
-├── lib/client.js       # 浏览器半：会话头部余额徽标（window.__ModuleLoader__ 格式）
+├── lib/client.js       # 浏览器半：输入框下方那一排的余额徽标（window.__ModuleLoader__ 格式）
 └── README.md
 ```
 
 ## 安装
 
-在仓库根目录（本目录的上一级）执行：
+在**本插件目录内**执行（`--profile` 换成你实际使用的 profile，桌面版是 `desktop`）：
 
 ```powershell
-dsh plugin --profile web add <plugin-dir>
+dsh plugin --profile desktop add .
 ```
 
-该命令会用 pnpm 把插件安装进 `~/.dsh/profiles/web`，并因 `dsh.bundle.patch` 声明自动把它追加到 `dsh.profile.bundles` 层栈。
+该命令会用 pnpm 把插件安装进 `$DSH_HOME/profiles/<profile>`，并因 `dsh.bundle.patch` 声明自动把它追加到 `dsh.profile.bundles` 层栈。
 
-**然后重启 `dsh web`**（插件在进程启动时挂载；重启后刷新页面即可在会话头部看到余额徽标）。
+**然后重启 DeepSeek Harness**（插件在进程启动时挂载；重启后刷新页面即可在输入框下方那一排看到余额徽标）。
+
+> 桌面版若 `dsh` 不在 PATH，可直接用应用自带的 `resources\runtime\cli\bin\dsh.cmd`。
 
 ## 卸载
 
 ```powershell
-dsh plugin --profile web remove deepseek-usage
+dsh plugin --profile desktop remove deepseek-usage
 ```
 
-再重启 `dsh web`。
+再重启 DeepSeek Harness。
 
 ## 配置
 
@@ -65,5 +67,5 @@ dsh plugin --profile web remove deepseek-usage
 
 ## 注意
 
-- 插件源文件在本目录（`<plugin-dir>`），profile 以 `link:` 依赖指向这里；请勿删除/移动本目录内容，否则插件会在下次启动时报模块缺失。
-- 本目录内有一个来历不明的空 `.git` 骨架（无 HEAD/config，refs 为空）。如果你要用 git 管理插件，建议先删除该 `.git` 再 `git init`；否则可能干扰 git 操作。
+- 插件源码即本仓库；安装后 profile 以 `link:` 依赖指向你本机 clone 下来的插件目录。请不要删除或移动该目录，否则下次启动会报模块缺失。
+- 仓库已用 git 跟踪全部插件文件。做 `git clean`、`git checkout -- .`、`git reset --hard` 这类操作前，请确认改动都已提交，避免误删未跟踪文件。
