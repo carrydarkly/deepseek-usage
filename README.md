@@ -1,11 +1,18 @@
 # deepseek-usage
+
 > 🤖 **AI 辅助生成声明**：本插件代码由 AI 辅助完成，所有功能实现均经过人工审查、测试和调整后发布。
 
-在 DSH Web GUI 的**会话头部**显示 **DeepSeek API 账户余额/剩余额度**的插件（当前仅支持 DeepSeek API）。
+在 DSH Web GUI 的**输入框下方那一排的最右侧**（composer dock，那一排左侧是「缓存命中 / tok/s」统计）显示 **DeepSeek API 账户余额/剩余额度**的插件（当前仅支持 DeepSeek API）。
 
 - 数据来源：DeepSeek 官方 [`GET /user/balance`](https://api-docs.deepseek.com/api/get-user-balance/) 接口。
 - API Key 只留在宿主进程：通过 `credentials` 服务（与 Web Models 设置页同一凭据通道）逐次解析，浏览器端永远拿不到 Key。
-- 宿主每 60 秒刷新一次缓存，浏览器徽标轮询同一个源上的 `/deepseek-usage/balance`，点击徽标展开明细（总余额 / 充值余额 / 赠送余额 / 可用状态 / 更新时间 / 手动刷新）。
+- 拉取策略（避免"刚打开时一段时间没数据"）：
+  - 宿主：启动即拉取，成功后每 60 秒一次；**失败会自己快速重试**（2s → 5s → 15s → 30s，之后并入常规节奏），并且浏览器每次读取时若发现快照不健康或已过期就顺手触发一次刷新；失败时**保留上次成功值**，快照带 `stale: true`。
+  - 浏览器：不是固定 60 秒轮询，而是自适应——首次读数到位前每 1.2 秒拉一次，之后进入 60 秒稳态；连续失败按 2s/4s/8s/15s/30s 退避；**切回页面/窗口聚焦时立即重拉**。
+  - 因此打开页面时通常 1～3 秒内就有数字（取决于 DeepSeek 接口本身耗时）；若中途拉取失败，徽标继续显示上次金额（红点 + 面板里提示"显示的是上次成功获取的数据"），而不是空掉。
+- **鼠标悬停在徽标上展开明细**（明细向上、向左弹出，移开自动关闭，键盘 Tab 聚焦同样展开），含总余额 / 充值余额 / 赠送余额 / 可用状态 / 更新时间 / 手动刷新。
+- 排版与那一排 pill 对齐：字号/行高取应用的内容次级字号变量（`--dsh-content-font-size-secondary - 1px`、`20px + --dsh-content-font-delta-secondary`），不要改回 `font: inherit`——那样会继承外壳默认字号，比旁边的 pill 明显偏大。明细面板与其中按钮用同一套字号。
+- 位置由 `lib/client.js` 里 `ctx.slots.register({ name: 'conversation.composer.dock', order: 10 })` 决定；靠最右由 wrapper 的 `order: 1`（排到上下文占用环之后）+ `marginLeft: auto`（吃掉整行剩余空隙）实现。注意那一排是居中 flex，所以钉住徽标后「tok/s / 缓存命中 / 占用环」会整体靠左——这是单个居中 flex 行的必然结果。想挪到别处只改这一个槽位名（例如侧边栏底部的 `sidebar.footer.action`，那种情况要去掉 `order`/`marginLeft`、并让面板改回向下弹出）。
 
 ## 结构
 
@@ -55,3 +62,8 @@ dsh plugin --profile web remove deepseek-usage
 
 - DeepSeek 官方没有提供「累计 token 消耗」的查询接口，`/user/balance` 返回的是账户余额；因此本插件显示的是余额/剩余额度而非 token 数。
 - 没有 API Key 时徽标显示「余额获取失败」，展开可看到原因。
+
+## 注意
+
+- 插件源文件在本目录（`<plugin-dir>`），profile 以 `link:` 依赖指向这里；请勿删除/移动本目录内容，否则插件会在下次启动时报模块缺失。
+- 本目录内有一个来历不明的空 `.git` 骨架（无 HEAD/config，refs 为空）。如果你要用 git 管理插件，建议先删除该 `.git` 再 `git init`；否则可能干扰 git 操作。

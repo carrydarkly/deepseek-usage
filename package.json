@@ -1,7 +1,7 @@
 {
   "name": "deepseek-usage",
-  "version": "0.1.0",
-  "description": "在 DSH Web GUI 的会话头部显示 DeepSeek API 账户余额/剩余额度（当前仅支持 DeepSeek API）",
+  "version": "0.2.0",
+  "description": "在 DSH Web GUI 输入框下方那一排显示 DeepSeek API 账户余额/剩余额度的插件（当前仅支持 DeepSeek API）",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -22,6 +22,15 @@
       "inject": []
     }
   },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek",
+    "deepseek-harness",
+    "balance",
+    "usage",
+    "quota"
+  ],
   "files": [
     "lib",
     "cordis.patch.yml",
