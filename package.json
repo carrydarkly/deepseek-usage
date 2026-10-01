@@ -1,7 +1,7 @@
 {
   "name": "deepseek-usage",
-  "version": "0.2.0",
-  "description": "在 DSH Web GUI 输入框下方那一排显示 DeepSeek API 账户余额/剩余额度的插件（当前仅支持 DeepSeek API）",
+  "version": "0.3.0",
+  "description": "在 DSH Web GUI 输入框下方那一排显示 DeepSeek API 余额，并支持余额预警额度与消耗异常告警（当前仅支持 DeepSeek API）",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
